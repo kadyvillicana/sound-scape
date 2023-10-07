@@ -29,6 +29,8 @@ const CustomText: FC<CustomTextProps> = ({ children, style, fontSize, isPrimary 
 
   return (
     <Text
+      numberOfLines={1}
+      ellipsizeMode="tail"
       style={[
         {
           fontSize: size,

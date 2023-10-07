@@ -13,7 +13,6 @@ const MainAreaView: FC<MainAreaViewProps> = ({ children, style }) => {
   return (
     <View
       style={[
-        style,
         {
           flex: 1,
           paddingTop: insets.top,
@@ -22,6 +21,7 @@ const MainAreaView: FC<MainAreaViewProps> = ({ children, style }) => {
           // paddingRight: insets.right,
           justifyContent: "space-between",
         },
+        style,
       ]}
     >
       {children}

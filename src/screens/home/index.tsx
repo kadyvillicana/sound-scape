@@ -16,13 +16,48 @@ interface HomeScreenProps {
 
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const { tracks, playNextTrack, playTrack, playPastTrack } = useTrackContext();
-  const { currentTrack } = usePlayerContext();
+  const { currentTrack, findImageBySize } = usePlayerContext();
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderBackgroundWidth, setSliderBackgroundWidth] = useState<DimensionValue>("0%");
 
   useEffect(() => {
     setSliderBackgroundWidth(`${sliderValue * 100}%`);
   }, [sliderValue]);
+
+  const Header = () => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingLeft: 10,
+          paddingRight: 10,
+        }}
+      >
+        <View style={{ flex: 1 }}></View>
+        <View
+          style={{
+            flex: 6,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CustomText isPrimary fontSize="medium" style={{ fontWeight: "500" }}>
+            Top tracks Mexico
+          </CustomText>
+        </View>
+        <View>
+          <CustomImage
+            imgSize="small"
+            isCircle
+            imgSrc={{
+              uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+            }}
+          />
+        </View>
+      </View>
+    );
+  };
 
   const trackItem = (track: Track, idx: number) => {
     return (
@@ -42,7 +77,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           <CustomImage
             imgSize={"medium"}
             imgSrc={{
-              uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+              uri: findImageBySize("medium"),
             }}
           />
         </View>
@@ -68,9 +103,10 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   if (tracks && tracks.length > 0 && tracks[0].name !== "")
     return (
       <MainAreaView style={styles.mainView}>
+        <Header />
         <FlatList
           data={tracks}
-          keyExtractor={(item) => item.mbid}
+          keyExtractor={(item) => item.name}
           renderItem={({ item, index }) => trackItem(item, index)}
         />
         {currentTrack && currentTrack.name !== "" && (
@@ -85,17 +121,19 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
             />
             <View style={styles.miniPlayerHeader}>
               <TouchableOpacity
-                style={{ flexDirection: "row", alignItems: "center" }}
+                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
                 onPress={() => navigation.navigate("Details")}
               >
                 <CustomImage
                   imgSize="small"
                   isCircle
                   imgSrc={{
-                    uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+                    uri: findImageBySize("small"),
                   }}
                 />
-                <CustomText style={styles.miniPlayerTrackName}>{currentTrack.name}</CustomText>
+                <View style={{ flex: 1 }}>
+                  <CustomText style={styles.miniPlayerTrackName}>{currentTrack.name}</CustomText>
+                </View>
               </TouchableOpacity>
               <View style={styles.miniPlayerControls}>
                 <TouchableOpacity onPress={playPastTrack}>
@@ -142,7 +180,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     position: "absolute",
-    // alignItems: "center",
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     bottom: 0.01,

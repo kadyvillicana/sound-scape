@@ -18,7 +18,7 @@ interface ImageP {
 }
 interface Tracks {
   track: Track[];
-  attr: Attr;
+  "@attr": Attr;
 }
 
 export interface Track {
@@ -61,17 +61,28 @@ export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ childr
   const getTracksByCountry = async (country: string): Promise<void> => {
     try {
       const endpoint = `${API_ENDPOINT}&country=${country}&api_key=${API_KEY}&format=json&limit=${TOP_TRACKS_LIMIT}`;
-      console.log(endpoint);
       const { data } = await axios.get<GetTracksResponse>(endpoint, {
         headers: {
           Accept: "application/json",
         },
       });
       if (data?.tracks?.track) {
-        setTracks(data.tracks.track);
+        avoidDuplicatedDate(data.tracks.track);
       }
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const avoidDuplicatedDate = (fetchedTracks: Track[]) => {
+    if (fetchedTracks.length > 0) {
+      const newArrayList: Track[] = [];
+      fetchedTracks.forEach((track) => {
+        if (!newArrayList.some((o) => o.mbid === track.mbid)) {
+          newArrayList.push({ ...track });
+        }
+      });
+      setTracks(newArrayList);
     }
   };
 

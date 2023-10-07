@@ -8,13 +8,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../styles/variables";
 import { NavigationProp } from "@react-navigation/native";
 import { useTrackContext } from "../../context/tracks-context";
+import MainAreaView from "../../components/main-area-view";
 
 interface DetailScreenProps {
   navigation: NavigationProp<any, any>;
 }
 
 export const DetailScreen: FC<DetailScreenProps> = ({ navigation }) => {
-  const { currentTrack } = usePlayerContext();
+  const { currentTrack, findImageBySize } = usePlayerContext();
   const { playNextTrack, playPastTrack } = useTrackContext();
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderBackgroundWidth, setSliderBackgroundWidth] = useState<DimensionValue>("0%");
@@ -24,13 +25,15 @@ export const DetailScreen: FC<DetailScreenProps> = ({ navigation }) => {
   }, [sliderValue]);
 
   return (
-    <View style={styles.main}>
+    <MainAreaView style={styles.main}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="ellipsis-h" size={20} color={colors.white} />
         </TouchableOpacity>
         <View style={styles.headerText}>
-          <CustomText fontSize="medium">Playing From</CustomText>
+          <CustomText style={{ fontWeight: "400" }} fontSize="medium">
+            Playing From
+          </CustomText>
           <CustomText isPrimary style={{ fontWeight: "400" }}>
             Poll, Top Tracks this week
           </CustomText>
@@ -53,11 +56,11 @@ export const DetailScreen: FC<DetailScreenProps> = ({ navigation }) => {
             style={styles.trackImage}
             imgSize="extralarge"
             imgSrc={{
-              uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+              uri: findImageBySize("extralarge"),
             }}
           />
         </View>
-        <View style={{ paddingTop: 45, alignItems: "center" }}>
+        <View style={{ paddingTop: 45, alignItems: "center", paddingLeft: 15, paddingRight: 15 }}>
           <CustomText fontSize="big" style={{ fontWeight: "500" }}>
             {currentTrack.name}
           </CustomText>
@@ -86,27 +89,29 @@ export const DetailScreen: FC<DetailScreenProps> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </MainAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   main: {
-    flex: 1,
     backgroundColor: colors.mainBackgroundColor,
+    paddingBottom: 0,
   },
   colorView: {
     flex: 1,
     position: "absolute",
     backgroundColor: colors.progressBarBackgroundColor,
     height: "100%",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 25,
+    paddingLeft: 25,
+    paddingRight: 25,
+    paddingBottom: 25,
   },
   headerText: {
     alignItems: "center",

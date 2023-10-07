@@ -27,7 +27,7 @@ const MainStackNavigator = () => (
       <MainStack.Screen name="Home" component={HomeScreen} />
       <MainStack.Screen name="Profile" component={ProfileScreen} />
     </MainStack.Group>
-    <MainStack.Group screenOptions={{ presentation: "modal" }}>
+    <MainStack.Group screenOptions={{ animation: "slide_from_bottom" }}>
       <MainStack.Screen name="Details" component={DetailScreen} />
     </MainStack.Group>
   </MainStack.Navigator>
