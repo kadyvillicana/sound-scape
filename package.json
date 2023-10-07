@@ -6,16 +6,17 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint --ext .tsx --ext .ts src/",
-    "format": "prettier --check .",
+    "format": "prettier --check src/",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "lint-fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}'"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "eslint --ext .tsx --ext .ts src/ --fix"
     ],
     "./src/**": [
-      "prettier --write ."
+      "prettier --write src/"
     ]
   },
   "husky": {
@@ -40,7 +41,9 @@
     "@react-native/eslint-config": "^0.72.2",
     "@react-native/metro-config": "^0.72.11",
     "@tsconfig/react-native": "^3.0.0",
+    "@types/": "react-navigation/native",
     "@types/react": "^18.0.24",
+    "@types/react-query": "^1.2.9",
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",

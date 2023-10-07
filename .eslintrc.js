@@ -1,15 +1,16 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es6: true,
   },
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
+    "plugin:prettier/recommended"
   ],
   overrides: [
     {
@@ -28,12 +29,13 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "react", "react-hooks", "prettier"],
+  plugins: ["@typescript-eslint", "react", "prettier"],
   rules: {
     "prettier/prettier": "error",
-    indent: ["error", "tab"],
+    "indent": ["error", "tab"],
     "linebreak-style": ["error", "unix"],
-    quotes: ["error", "double"],
-    semi: ["error", "always"],
+    "quotes": ["error", "double"],
+    "semi": ["error", "always"],
+    "indent": "off"
   },
 };
