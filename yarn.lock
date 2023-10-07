@@ -1924,6 +1924,11 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.8.tgz"
   integrity sha512-kMpQpfZKSCBqltAJwskgePRaYRFukDkm1oItcAbC3gNELR20XIBcN9VRgg4+m8DKsTfkWeA4m4Imp4DDuWy7FQ==
 
+"@types/react-native-dotenv@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-dotenv/-/react-native-dotenv-0.2.0.tgz#32c58422a422c1adf68acce363ed791314d5a8e7"
+  integrity sha512-ZxX+dU/yoQc0jTk+/NWttkiuXceJyN5FpOSqDl0WynN5GDzxwH7OMruQ47qcY8llo2RD3irjvzJ9BwC8gDiq0A==
+
 "@types/react-query@^1.2.9":
   version "1.2.9"
   resolved "https://registry.yarnpkg.com/@types/react-query/-/react-query-1.2.9.tgz#61df5a0594ea4b90234f9c0fdd8f12a06e331fed"

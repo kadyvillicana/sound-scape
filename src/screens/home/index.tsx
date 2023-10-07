@@ -1,7 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
-import { View, Text, FlatList, Image } from "react-native";
 import { API_KEY } from "@env";
 import axios from "axios";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import MainAreaView from "../../components/main-area-view";
+import CustomText from "../../components/custom-text";
+import CustomImage from "../../components/custom-image";
+import { NavigationProp } from "@react-navigation/native";
 
 interface Artist {
   name: string;
@@ -41,7 +45,12 @@ interface GetTracksResponse {
   tracks: Tracks;
 }
 
-export const HomeScreen: FC = () => {
+interface HomeScreenProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  navigation: NavigationProp<any, any>;
+}
+
+export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
   const defaultTracks: Track[] = [];
 
   const [tracks, setTracks] = useState(defaultTracks);
@@ -50,7 +59,7 @@ export const HomeScreen: FC = () => {
   const getData = async (): Promise<void> => {
     setIsLoading(true);
     const { data } = await axios.get<GetTracksResponse>(
-      `http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=spain&api_key=${API_KEY}&format=json&limit=10`,
+      `https://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=spain&api_key=${API_KEY}&format=json&limit=10`,
       {
         headers: {
           Accept: "application/json",
@@ -67,39 +76,44 @@ export const HomeScreen: FC = () => {
 
   const trackItem = (track: Track) => {
     return (
-      <View
+      <TouchableOpacity
         style={{
           flex: 1,
           flexDirection: "row",
+          paddingTop: 10,
         }}
+        onPress={() => navigation.navigate("Details")}
       >
         <View
           style={{
             padding: 10,
           }}
         >
-          <Image
-            style={{
-              width: 65,
-              height: 65,
-            }}
-            source={{
+          <CustomImage
+            imgSize={"medium"}
+            imgSrc={{
               uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
             }}
           />
         </View>
         <View style={{ flex: 1, justifyContent: "center" }}>
-          <View style={{ padding: 5 }}>
-            <Text>Another text</Text>
+          <View>
+            <CustomText style={{}} fontSize="small">
+              Another text
+            </CustomText>
           </View>
-          <View style={{ padding: 5 }}>
-            <Text>{track.name}</Text>
+          <View>
+            <CustomText style={{}} fontSize="regular">
+              {track.name}
+            </CustomText>
           </View>
-          <View style={{ padding: 5 }}>
-            <Text>{track.artist.name}</Text>
+          <View>
+            <CustomText style={{}} fontSize="medium">
+              {track.artist.name}
+            </CustomText>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -111,12 +125,12 @@ export const HomeScreen: FC = () => {
     );
 
   return (
-    <View style={{ flex: 1 }}>
+    <MainAreaView styles={{ backgroundColor: "blue" }}>
       <FlatList
         data={tracks}
         keyExtractor={(item) => item.mbid}
         renderItem={({ item }) => trackItem(item)}
       />
-    </View>
+    </MainAreaView>
   );
 };

@@ -1,4 +1,5 @@
 import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View } from "react-native";
@@ -25,7 +26,7 @@ function ProfileScreen() {
 }
 
 const MainStackNavigator = () => (
-  <MainStack.Navigator screenOptions={SCREEN_OPTIONS}>
+  <MainStack.Navigator screenOptions={SCREEN_OPTIONS} initialRouteName="Home">
     <MainStack.Screen name="Home" component={HomeScreen} />
     <MainStack.Screen name="Details" component={DetailsScreen} />
     <MainStack.Screen name="Profile" component={ProfileScreen} />
@@ -34,9 +35,11 @@ const MainStackNavigator = () => (
 
 const MainNavigatorImpl = () => {
   return (
-    <NavigationContainer>
-      <MainStackNavigator />
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <MainStackNavigator />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 
