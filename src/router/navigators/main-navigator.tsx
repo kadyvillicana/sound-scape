@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View } from "react-native";
 import { HomeScreen } from "../../screens/home";
+import { PlayerContextProvider } from "../../context/player-context";
 
 const SCREEN_OPTIONS = { header: () => null };
 
@@ -37,7 +38,9 @@ const MainNavigatorImpl = () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <MainStackNavigator />
+        <PlayerContextProvider>
+          <MainStackNavigator />
+        </PlayerContextProvider>
       </NavigationContainer>
     </SafeAreaProvider>
   );

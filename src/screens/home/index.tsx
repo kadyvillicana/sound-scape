@@ -1,11 +1,12 @@
 import React, { FC, useEffect, useState } from "react";
 import { API_KEY } from "@env";
 import axios from "axios";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, DimensionValue } from "react-native";
 import MainAreaView from "../../components/main-area-view";
 import CustomText from "../../components/custom-text";
 import CustomImage from "../../components/custom-image";
-import { NavigationProp } from "@react-navigation/native";
+import { usePlayerContext } from "../../context/player-context";
+import { Slider } from "@miblanchard/react-native-slider";
 
 interface Artist {
   name: string;
@@ -18,7 +19,7 @@ interface ImageP {
   size: "small" | "medium" | "large" | "extralarge";
 }
 
-interface Track {
+export interface Track {
   name: string;
   duration: number;
   listeners: number;
@@ -45,16 +46,19 @@ interface GetTracksResponse {
   tracks: Tracks;
 }
 
-interface HomeScreenProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  navigation: NavigationProp<any, any>;
-}
+// interface HomeScreenProps {
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   navigation: NavigationProp<any, any>;
+// }
 
-export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
+export const HomeScreen: FC = () => {
   const defaultTracks: Track[] = [];
 
   const [tracks, setTracks] = useState(defaultTracks);
   const [isLoading, setIsLoading] = useState(false);
+  const { currentTrack, setCurrentTrack } = usePlayerContext();
+  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderBackgroundWidth, setSliderBackgroundWidth] = useState<DimensionValue>("0%");
 
   const getData = async (): Promise<void> => {
     setIsLoading(true);
@@ -74,7 +78,15 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     void getData();
   }, []);
 
-  const trackItem = (track: Track) => {
+  useEffect(() => {
+    setSliderBackgroundWidth(`${sliderValue.toFixed(2) * 100}%`);
+  }, [sliderValue]);
+
+  const playTrack = (idx: number) => {
+    setCurrentTrack(tracks[idx]);
+  };
+
+  const trackItem = (track: Track, idx: number) => {
     return (
       <TouchableOpacity
         style={{
@@ -82,7 +94,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           flexDirection: "row",
           paddingTop: 10,
         }}
-        onPress={() => navigation.navigate("Details")}
+        onPress={() => playTrack(idx)}
       >
         <View
           style={{
@@ -129,8 +141,73 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
       <FlatList
         data={tracks}
         keyExtractor={(item) => item.mbid}
-        renderItem={({ item }) => trackItem(item)}
+        renderItem={({ item, index }) => trackItem(item, index)}
       />
+      {currentTrack && currentTrack.name !== "" && (
+        <View
+          style={{
+            flex: 1,
+            width: "100%",
+            position: "absolute",
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            bottom: 0.01,
+            paddingBottom: 30,
+            backgroundColor: "yellow",
+            height: 150,
+          }}
+        >
+          {/* <View style={[styles.colorView, { flex: sliderValue + 1, backgroundColor: "blue" }]} /> */}
+          <View
+            style={[
+              styles.colorView,
+              {
+                flex: 1,
+                width: sliderBackgroundWidth,
+                backgroundColor: "red",
+                height: 200,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+              },
+            ]}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <CustomImage
+              imgSize="small"
+              isCircle
+              imgSrc={{
+                uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+              }}
+            />
+            <Text>{currentTrack.name}</Text>
+          </View>
+          <View>
+            <Slider
+              minimumValue={0}
+              maximumValue={1}
+              value={sliderValue}
+              onValueChange={(value) => setSliderValue(value[0])}
+              // animateTransitions
+              // minimumTrackTintColor="#d14ba6"
+              // thumbStyle={styles.thumb}
+              // trackStyle={styles.track}
+            />
+          </View>
+        </View>
+      )}
     </MainAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  colorView: {
+    flex: 1,
+    position: "absolute",
+  },
+});

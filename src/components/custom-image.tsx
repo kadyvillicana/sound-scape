@@ -4,9 +4,10 @@ import { Dimensions, Image, ImageSourcePropType } from "react-native";
 interface CustomImageProps {
   imgSrc: ImageSourcePropType; // Image source, e.g., {uri: 'https://example.com/image.jpg'}
   imgSize?: "small" | "medium" | "large" | "extralarge"; // Size of the image (optional)
+  isCircle?: boolean;
 }
 
-const CustomImage: FC<CustomImageProps> = ({ imgSrc, imgSize }) => {
+const CustomImage: FC<CustomImageProps> = ({ imgSrc, imgSize, isCircle }) => {
   const SCREEN_HEIGHT = Dimensions.get("window").height;
 
   const getImgSize = (size: string) => {
@@ -33,7 +34,7 @@ const CustomImage: FC<CustomImageProps> = ({ imgSrc, imgSize }) => {
           resizeMode: "cover",
           width: SCREEN_HEIGHT * size,
           height: SCREEN_HEIGHT * size,
-          borderRadius: 10,
+          borderRadius: isCircle ? SCREEN_HEIGHT * size : 10,
         },
       ]}
       source={imgSrc}
