@@ -98,11 +98,11 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
                 <CustomText style={styles.miniPlayerTrackName}>{currentTrack.name}</CustomText>
               </TouchableOpacity>
               <View style={styles.miniPlayerControls}>
-                <TouchableOpacity onPress={() => playPastTrack}>
+                <TouchableOpacity onPress={playPastTrack}>
                   <Icon name="backward" size={15} color={colors.secondaryFontColor} />
                 </TouchableOpacity>
                 <Icon name="play" size={25} color={colors.secondaryFontColor} />
-                <TouchableOpacity onPress={() => playNextTrack}>
+                <TouchableOpacity onPress={playNextTrack}>
                   <Icon name="forward" size={15} color={colors.secondaryFontColor} />
                 </TouchableOpacity>
               </View>

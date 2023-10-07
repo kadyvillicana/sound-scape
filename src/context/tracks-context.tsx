@@ -46,8 +46,8 @@ interface GetTracksResponse {
 interface TrackContextValues {
   tracks: any;
   playTrack: (arg: number) => void;
-  playNextTrack: void;
-  playPastTrack: void;
+  playNextTrack: any;
+  playPastTrack: any;
 }
 
 export const TrackContext = createContext<TrackContextValues | undefined>(undefined);
