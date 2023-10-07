@@ -3,20 +3,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View } from "react-native";
-import { HomeScreen } from "../../screens/home";
 import { PlayerContextProvider } from "../../context/player-context";
+
+import { HomeScreen } from "../../screens/home";
+import { DetailScreen } from "../../screens/details";
 
 const SCREEN_OPTIONS = { header: () => null };
 
 const MainStack = createNativeStackNavigator();
-
-function DetailsScreen() {
-  return (
-    <View>
-      <Text>Details Screen</Text>
-    </View>
-  );
-}
 
 function ProfileScreen() {
   return (
@@ -28,9 +22,13 @@ function ProfileScreen() {
 
 const MainStackNavigator = () => (
   <MainStack.Navigator screenOptions={SCREEN_OPTIONS} initialRouteName="Home">
-    <MainStack.Screen name="Home" component={HomeScreen} />
-    <MainStack.Screen name="Details" component={DetailsScreen} />
-    <MainStack.Screen name="Profile" component={ProfileScreen} />
+    <MainStack.Group>
+      <MainStack.Screen name="Home" component={HomeScreen} />
+      <MainStack.Screen name="Profile" component={ProfileScreen} />
+    </MainStack.Group>
+    <MainStack.Group screenOptions={{ presentation: "modal" }}>
+      <MainStack.Screen name="Details" component={DetailScreen} />
+    </MainStack.Group>
   </MainStack.Navigator>
 );
 

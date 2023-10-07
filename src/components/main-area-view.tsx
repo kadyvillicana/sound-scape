@@ -4,16 +4,16 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface MainAreaViewProps {
   children: ReactNode; // The content to be displayed inside the MainAreaView
-  styles?: ViewStyle; // Additional styles for the MainAreaView (optional)
+  style?: ViewStyle; // Additional styles for the MainAreaView (optional)
 }
 
-const MainAreaView: FC<MainAreaViewProps> = ({ children, styles }) => {
+const MainAreaView: FC<MainAreaViewProps> = ({ children, style }) => {
   const insets = useSafeAreaInsets();
 
   return (
     <View
       style={[
-        styles,
+        style,
         {
           flex: 1,
           paddingTop: insets.top,
