@@ -1,0 +1,116 @@
+import axios from "axios";
+import React, { FC, createContext, useContext, useEffect, useState } from "react";
+
+import { API_KEY, TOP_TRACKS_LIMIT } from "@env";
+import { usePlayerContext } from "./player-context";
+
+const API_ENDPOINT = "https://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks";
+
+interface Artist {
+  name: string;
+  mbid: string;
+  url: string;
+}
+
+interface ImageP {
+  "#text": string;
+  size: "small" | "medium" | "large" | "extralarge";
+}
+interface Tracks {
+  track: Track[];
+  attr: Attr;
+}
+
+export interface Track {
+  name: string;
+  duration: number;
+  listeners: number;
+  mbid: string;
+  url: string;
+  artist: Artist;
+  image: ImageP[];
+}
+
+interface Attr {
+  country: string;
+  page: number;
+  perPage: number;
+  totalPages: number;
+  total: number;
+}
+
+interface GetTracksResponse {
+  tracks: Tracks;
+}
+
+interface TrackContextValues {
+  tracks: any;
+  playTrack: (arg: number) => void;
+  playNextTrack: void;
+  playPastTrack: void;
+}
+
+export const TrackContext = createContext<TrackContextValues | undefined>(undefined);
+
+export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
+  const defaultTracks: Track[] = [];
+  const [tracks, setTracks] = useState(defaultTracks);
+  const { setCurrentTrack } = usePlayerContext();
+  const [trackIndex, setTrackIndex] = useState(0);
+
+  const getTracksByCountry = async (country: string): Promise<void> => {
+    try {
+      const endpoint = `${API_ENDPOINT}&country=${country}&api_key=${API_KEY}&format=json&limit=${TOP_TRACKS_LIMIT}`;
+      console.log(endpoint);
+      const { data } = await axios.get<GetTracksResponse>(endpoint, {
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      if (data?.tracks?.track) {
+        setTracks(data.tracks.track);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const playTrack = (idx: number) => {
+    setTrackIndex(idx);
+    setCurrentTrack(tracks[idx]);
+  };
+
+  const playNextTrack = () => {
+    const nextTrackIndex = trackIndex + 1;
+    if (nextTrackIndex > tracks.length) {
+      // end of list
+      return;
+    }
+    playTrack(nextTrackIndex);
+  };
+
+  const playPastTrack = () => {
+    const pastTrackIndex = trackIndex - 1;
+    if (pastTrackIndex < 0) {
+      // end of list
+      return;
+    }
+    playTrack(pastTrackIndex);
+  };
+
+  useEffect(() => {
+    void getTracksByCountry("mexico");
+  }, []);
+
+  return (
+    <TrackContext.Provider value={{ tracks, playNextTrack, playPastTrack, playTrack }}>
+      {children}
+    </TrackContext.Provider>
+  );
+};
+
+export const useTrackContext = () => {
+  const ctx = useContext(TrackContext);
+  if (!ctx) throw new Error("Attempt to use track context outside its scope");
+  return ctx;
+};

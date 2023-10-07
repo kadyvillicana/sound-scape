@@ -1,5 +1,5 @@
 import React, { FC, createContext, useContext, useState } from "react";
-import { Track } from "../screens/home";
+import { Track } from "./tracks-context";
 
 interface PlayerContextValues {
   currentTrack: any;
@@ -34,6 +34,6 @@ export const PlayerContextProvider: FC<{ children: React.ReactNode }> = ({ child
 
 export const usePlayerContext = (): PlayerContextValues => {
   const ctx = useContext(PlayerContext);
-  if (!ctx) throw new Error("Attempt to use error handle context outside its scope");
+  if (!ctx) throw new Error("Attempt to use player context outside its scope");
   return ctx;
 };

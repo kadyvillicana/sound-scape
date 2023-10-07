@@ -7,6 +7,7 @@ import { PlayerContextProvider } from "../../context/player-context";
 
 import { HomeScreen } from "../../screens/home";
 import { DetailScreen } from "../../screens/details";
+import { TrackContextProvider } from "../../context/tracks-context";
 
 const SCREEN_OPTIONS = { header: () => null };
 
@@ -37,7 +38,9 @@ const MainNavigatorImpl = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         <PlayerContextProvider>
-          <MainStackNavigator />
+          <TrackContextProvider>
+            <MainStackNavigator />
+          </TrackContextProvider>
         </PlayerContextProvider>
       </NavigationContainer>
     </SafeAreaProvider>

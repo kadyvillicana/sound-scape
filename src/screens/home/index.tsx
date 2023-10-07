@@ -1,7 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { API_KEY } from "@env";
-import axios from "axios";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, DimensionValue } from "react-native";
+import { View, FlatList, TouchableOpacity, StyleSheet, DimensionValue } from "react-native";
 import MainAreaView from "../../components/main-area-view";
 import CustomText from "../../components/custom-text";
 import CustomImage from "../../components/custom-image";
@@ -10,83 +8,21 @@ import { Slider } from "@miblanchard/react-native-slider";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { NavigationProp } from "@react-navigation/native";
 import { colors } from "../../styles/variables";
-
-interface Artist {
-  name: string;
-  mbid: string;
-  url: string;
-}
-
-interface ImageP {
-  "#text": string;
-  size: "small" | "medium" | "large" | "extralarge";
-}
-
-export interface Track {
-  name: string;
-  duration: number;
-  listeners: number;
-  mbid: string;
-  url: string;
-  artist: Artist;
-  image: ImageP[];
-}
-
-interface Attr {
-  country: string;
-  page: number;
-  perPage: number;
-  totalPages: number;
-  total: number;
-}
-
-interface Tracks {
-  track: Track[];
-  attr: Attr;
-}
-
-interface GetTracksResponse {
-  tracks: Tracks;
-}
+import { Track, useTrackContext } from "../../context/tracks-context";
 
 interface HomeScreenProps {
   navigation: NavigationProp<any, any>;
 }
 
 export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
-  const defaultTracks: Track[] = [];
-
-  const [tracks, setTracks] = useState(defaultTracks);
-  const [isLoading, setIsLoading] = useState(false);
-  const { currentTrack, setCurrentTrack } = usePlayerContext();
+  const { tracks, playNextTrack, playTrack, playPastTrack } = useTrackContext();
+  const { currentTrack } = usePlayerContext();
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderBackgroundWidth, setSliderBackgroundWidth] = useState<DimensionValue>("0%");
-
-  const getData = async (): Promise<void> => {
-    setIsLoading(true);
-    const { data } = await axios.get<GetTracksResponse>(
-      `https://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=spain&api_key=${API_KEY}&format=json&limit=10`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      },
-    );
-    setTracks(data.tracks.track);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    void getData();
-  }, []);
 
   useEffect(() => {
     setSliderBackgroundWidth(`${sliderValue * 100}%`);
   }, [sliderValue]);
-
-  const playTrack = (idx: number) => {
-    setCurrentTrack(tracks[idx]);
-  };
 
   const trackItem = (track: Track, idx: number) => {
     return (
@@ -129,67 +65,65 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     );
   };
 
-  if (isLoading)
+  if (tracks && tracks.length > 0 && tracks[0].name !== "")
     return (
-      <View>
-        <Text>Loading</Text>
-      </View>
+      <MainAreaView style={styles.mainView}>
+        <FlatList
+          data={tracks}
+          keyExtractor={(item) => item.mbid}
+          renderItem={({ item, index }) => trackItem(item, index)}
+        />
+        {currentTrack && currentTrack.name !== "" && (
+          <View style={styles.miniPlayer}>
+            <View
+              style={[
+                styles.colorView,
+                {
+                  width: sliderBackgroundWidth,
+                },
+              ]}
+            />
+            <View style={styles.miniPlayerHeader}>
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center" }}
+                onPress={() => navigation.navigate("Details")}
+              >
+                <CustomImage
+                  imgSize="small"
+                  isCircle
+                  imgSrc={{
+                    uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+                  }}
+                />
+                <CustomText style={styles.miniPlayerTrackName}>{currentTrack.name}</CustomText>
+              </TouchableOpacity>
+              <View style={styles.miniPlayerControls}>
+                <TouchableOpacity onPress={() => playPastTrack}>
+                  <Icon name="backward" size={15} color={colors.secondaryFontColor} />
+                </TouchableOpacity>
+                <Icon name="play" size={25} color={colors.secondaryFontColor} />
+                <TouchableOpacity onPress={() => playNextTrack}>
+                  <Icon name="forward" size={15} color={colors.secondaryFontColor} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <View style={{ width: "85%" }}>
+                <Slider
+                  minimumValue={0}
+                  maximumValue={1}
+                  thumbStyle={styles.thumb}
+                  trackStyle={styles.track}
+                  value={sliderValue}
+                  minimumTrackTintColor={colors.ternairyBackgroundColor}
+                  onValueChange={(value) => setSliderValue(value[0])}
+                />
+              </View>
+            </View>
+          </View>
+        )}
+      </MainAreaView>
     );
-
-  return (
-    <MainAreaView style={styles.mainView}>
-      <FlatList
-        data={tracks}
-        keyExtractor={(item) => item.mbid}
-        renderItem={({ item, index }) => trackItem(item, index)}
-      />
-      {currentTrack && currentTrack.name !== "" && (
-        <View style={styles.miniPlayer}>
-          <View
-            style={[
-              styles.colorView,
-              {
-                width: sliderBackgroundWidth,
-              },
-            ]}
-          />
-          <View style={styles.miniPlayerHeader}>
-            <TouchableOpacity
-              style={{ flexDirection: "row", alignItems: "center" }}
-              onPress={() => navigation.navigate("Details")}
-            >
-              <CustomImage
-                imgSize="small"
-                isCircle
-                imgSrc={{
-                  uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
-                }}
-              />
-              <CustomText style={styles.miniPlayerTrackName}>{currentTrack.name}</CustomText>
-            </TouchableOpacity>
-            <View style={styles.miniPlayerControls}>
-              <Icon name="backward" size={15} color={colors.secondaryFontColor} />
-              <Icon name="play" size={25} color={colors.secondaryFontColor} />
-              <Icon name="forward" size={15} color={colors.secondaryFontColor} />
-            </View>
-          </View>
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <View style={{ width: "85%" }}>
-              <Slider
-                minimumValue={0}
-                maximumValue={1}
-                thumbStyle={styles.thumb}
-                trackStyle={styles.track}
-                value={sliderValue}
-                minimumTrackTintColor={colors.ternairyBackgroundColor}
-                onValueChange={(value) => setSliderValue(value[0])}
-              />
-            </View>
-          </View>
-        </View>
-      )}
-    </MainAreaView>
-  );
 };
 
 const styles = StyleSheet.create({

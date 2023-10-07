@@ -7,6 +7,7 @@ import { Slider } from "@miblanchard/react-native-slider";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../styles/variables";
 import { NavigationProp } from "@react-navigation/native";
+import { useTrackContext } from "../../context/tracks-context";
 
 interface DetailScreenProps {
   navigation: NavigationProp<any, any>;
@@ -14,6 +15,7 @@ interface DetailScreenProps {
 
 export const DetailScreen: FC<DetailScreenProps> = ({ navigation }) => {
   const { currentTrack } = usePlayerContext();
+  const { playNextTrack, playPastTrack } = useTrackContext();
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderBackgroundWidth, setSliderBackgroundWidth] = useState<DimensionValue>("0%");
 
@@ -75,9 +77,13 @@ export const DetailScreen: FC<DetailScreenProps> = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.playerControls}>
-          <Icon name="backward" size={25} color={colors.secondaryFontColor} />
+          <TouchableOpacity onPress={playPastTrack}>
+            <Icon name="backward" size={25} color={colors.secondaryFontColor} />
+          </TouchableOpacity>
           <Icon name="play" size={40} color={colors.secondaryFontColor} />
-          <Icon name="forward" size={25} color={colors.secondaryFontColor} />
+          <TouchableOpacity onPress={playNextTrack}>
+            <Icon name="forward" size={25} color={colors.secondaryFontColor} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
