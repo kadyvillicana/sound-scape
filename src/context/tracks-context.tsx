@@ -1,8 +1,9 @@
-import axios from "axios";
 import React, { FC, createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 import { API_KEY, TOP_TRACKS_LIMIT } from "@env";
 import { usePlayerContext } from "./player-context";
+import { useProfileContext } from "./profile-context";
 
 const API_ENDPOINT = "https://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks";
 
@@ -56,6 +57,7 @@ export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ childr
   const defaultTracks: Track[] = [];
   const [tracks, setTracks] = useState(defaultTracks);
   const { setCurrentTrack } = usePlayerContext();
+  const { setListenedTracks } = useProfileContext();
   const [trackIndex, setTrackIndex] = useState(0);
 
   const getTracksByCountry = async (country: string): Promise<void> => {
@@ -89,6 +91,11 @@ export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ childr
   const playTrack = (idx: number) => {
     setTrackIndex(idx);
     setCurrentTrack(tracks[idx]);
+    const listenedTrack = {
+      ...tracks[idx],
+      date: new Date(),
+    };
+    setListenedTracks(listenedTrack);
   };
 
   const playNextTrack = () => {

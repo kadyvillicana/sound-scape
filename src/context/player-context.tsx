@@ -27,6 +27,9 @@ export const PlayerContextProvider: FC<{ children: React.ReactNode }> = ({ child
   const [currentTrack, setCurrentTrack] = useState<Track>(defaultTrack);
 
   const findImageBySize = (imgSize: string) => {
+    if (!currentTrack.image) {
+      return "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png";
+    }
     for (const image of currentTrack.image) {
       if (image.size === imgSize) {
         return image["#text"];

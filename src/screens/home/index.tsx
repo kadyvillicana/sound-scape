@@ -1,14 +1,17 @@
 import React, { FC, useEffect, useState } from "react";
 import { View, FlatList, TouchableOpacity, StyleSheet, DimensionValue } from "react-native";
+
 import MainAreaView from "../../components/main-area-view";
 import CustomText from "../../components/custom-text";
 import CustomImage from "../../components/custom-image";
+
 import { usePlayerContext } from "../../context/player-context";
+import { Track, useTrackContext } from "../../context/tracks-context";
+
 import { Slider } from "@miblanchard/react-native-slider";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { NavigationProp } from "@react-navigation/native";
 import { colors } from "../../styles/variables";
-import { Track, useTrackContext } from "../../context/tracks-context";
 
 interface HomeScreenProps {
   navigation: NavigationProp<any, any>;
@@ -46,15 +49,13 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
             Top tracks Mexico
           </CustomText>
         </View>
-        <View>
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           <CustomImage
             imgSize="small"
             isCircle
-            imgSrc={{
-              uri: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
-            }}
+            imgSrc={require("../../assets/images/profile-image.jpeg")}
           />
-        </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -77,7 +78,8 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           <CustomImage
             imgSize={"medium"}
             imgSrc={{
-              uri: findImageBySize("medium"),
+              uri: track.image[1]["#text"],
+              cache: "only-if-cached",
             }}
           />
         </View>
@@ -102,11 +104,11 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
 
   if (tracks && tracks.length > 0 && tracks[0].name !== "")
     return (
-      <MainAreaView style={styles.mainView}>
+      <MainAreaView>
         <Header />
         <FlatList
           data={tracks}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.mbid}
           renderItem={({ item, index }) => trackItem(item, index)}
         />
         {currentTrack && currentTrack.name !== "" && (
@@ -129,6 +131,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
                   isCircle
                   imgSrc={{
                     uri: findImageBySize("small"),
+                    cache: "only-if-cached",
                   }}
                 />
                 <View style={{ flex: 1 }}>
@@ -165,9 +168,6 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  mainView: {
-    backgroundColor: colors.mainBackgroundColor,
-  },
   colorView: {
     flex: 1,
     position: "absolute",

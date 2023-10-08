@@ -95,7 +95,6 @@ export const DetailScreen: FC<DetailScreenProps> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: colors.mainBackgroundColor,
     paddingBottom: 0,
   },
   colorView: {

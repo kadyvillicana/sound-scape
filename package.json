@@ -14,9 +14,6 @@
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "eslint --ext .tsx --ext .ts src/ --fix"
-    ],
-    "./src/**": [
-      "prettier --write src/"
     ]
   },
   "husky": {
