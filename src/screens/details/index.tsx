@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { DimensionValue, StyleSheet, TouchableOpacity, View } from "react-native";
+import { DimensionValue, Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomImage from "../../components/custom-image";
 import CustomText from "../../components/custom-text";
 import { usePlayerContext } from "../../context/player-context";
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     paddingRight: 25,
     paddingBottom: 25,
+    paddingTop: Platform.OS === "ios" ? 0 : 15,
   },
   headerText: {
     alignItems: "center",

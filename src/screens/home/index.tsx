@@ -1,5 +1,12 @@
 import React, { FC, useEffect, useState } from "react";
-import { View, FlatList, TouchableOpacity, StyleSheet, DimensionValue } from "react-native";
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  DimensionValue,
+  Platform,
+} from "react-native";
 
 import MainAreaView from "../../components/main-area-view";
 import CustomText from "../../components/custom-text";
@@ -35,6 +42,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           justifyContent: "space-between",
           paddingLeft: 10,
           paddingRight: 10,
+          paddingTop: Platform.OS === "ios" ? 0 : 15,
         }}
       >
         <View style={{ flex: 1 }}></View>
@@ -62,13 +70,12 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
 
   const trackItem = (track: Track, idx: number) => {
     return (
-      <TouchableOpacity
+      <View
         style={{
           flex: 1,
           flexDirection: "row",
           paddingTop: 10,
         }}
-        onPress={() => playTrack(idx)}
       >
         <View
           style={{
@@ -76,7 +83,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           }}
         >
           <CustomImage
-            imgSize={"medium"}
+            imgSize={"small"}
             imgSrc={{
               uri: track.image[1]["#text"],
               cache: "only-if-cached",
@@ -85,10 +92,15 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
         </View>
         <View style={{ flex: 1, justifyContent: "center", gap: 5 }}>
           <View>
-            <CustomText fontSize="small">{track.listeners}</CustomText>
-          </View>
-          <View>
-            <CustomText fontSize="regular" isPrimary style={{ fontWeight: "400" }}>
+            <CustomText
+              fontSize="regular"
+              isPrimary
+              style={{
+                fontWeight: "400",
+                color:
+                  track.mbid === currentTrack.mbid ? colors.activeGreen : colors.primaryFontColor,
+              }}
+            >
               {track.name}
             </CustomText>
           </View>
@@ -98,7 +110,16 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
             </CustomText>
           </View>
         </View>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingRight: 20,
+            justifyContent: "center",
+          }}
+          onPress={() => playTrack(idx)}
+        >
+          <Icon name="play" size={25} color={colors.secondaryFontColor} />
+        </TouchableOpacity>
+      </View>
     );
   };
 

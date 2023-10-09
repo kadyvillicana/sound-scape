@@ -21,6 +21,10 @@ const defaultTrack: Track = {
   image: [],
 };
 
+export interface GetTrackInfoResponse {
+  track: Track;
+}
+
 export const PlayerContext = createContext<PlayerContextValues | undefined>(undefined);
 
 export const PlayerContextProvider: FC<{ children: React.ReactNode }> = ({ children }) => {

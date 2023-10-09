@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import MainAreaView from "../../components/main-area-view";
 import CustomText from "../../components/custom-text";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import { FlatList, Platform, TouchableOpacity, View } from "react-native";
 import CustomImage from "../../components/custom-image";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../styles/variables";
@@ -27,6 +27,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = ({ navigation }) => {
           justifyContent: "space-between",
           paddingLeft: 10,
           paddingRight: 10,
+          paddingTop: Platform.OS === "ios" ? 0 : 15,
         }}
       >
         <TouchableOpacity

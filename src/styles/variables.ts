@@ -6,4 +6,5 @@ export const colors = {
   ternairyBackgroundColor: "#57697d",
   progressBarBackgroundColor: "#eaf1f4",
   white: "#fafbff",
+  activeGreen: "#1DB954",
 };

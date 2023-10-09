@@ -13,7 +13,34 @@ interface Artist {
   url: string;
 }
 
-interface ImageP {
+interface Album {
+  artist: string;
+  title: string;
+  mbid: string;
+  url: string;
+  image: ImageP[];
+}
+
+interface Tag {
+  name: string;
+  url: string;
+}
+
+interface Wiki {
+  published: string;
+  summary: string;
+  content: string;
+}
+
+interface Attr {
+  country: string;
+  page: number;
+  perPage: number;
+  totalPages: number;
+  total: number;
+}
+
+export interface ImageP {
   "#text": string;
   size: "small" | "medium" | "large" | "extralarge";
 }
@@ -30,17 +57,14 @@ export interface Track {
   url: string;
   artist: Artist;
   image: ImageP[];
+  album?: Album;
+  toptags?: {
+    tag: Tag[];
+  };
+  wiki?: Wiki;
 }
 
-interface Attr {
-  country: string;
-  page: number;
-  perPage: number;
-  totalPages: number;
-  total: number;
-}
-
-interface GetTracksResponse {
+export interface GetTracksResponse {
   tracks: Tracks;
 }
 
@@ -57,7 +81,7 @@ export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ childr
   const defaultTracks: Track[] = [];
   const [tracks, setTracks] = useState(defaultTracks);
   const { setCurrentTrack } = usePlayerContext();
-  const { setListenedTracks } = useProfileContext();
+  const { addListenedTrackToList } = useProfileContext();
   const [trackIndex, setTrackIndex] = useState(0);
 
   const getTracksByCountry = async (country: string): Promise<void> => {
@@ -95,12 +119,12 @@ export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ childr
       ...tracks[idx],
       date: new Date(),
     };
-    setListenedTracks(listenedTrack);
+    addListenedTrackToList(listenedTrack);
   };
 
   const playNextTrack = () => {
     const nextTrackIndex = trackIndex + 1;
-    if (nextTrackIndex > tracks.length) {
+    if (nextTrackIndex === tracks.length) {
       // end of list
       return;
     }
