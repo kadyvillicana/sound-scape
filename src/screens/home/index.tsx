@@ -6,6 +6,7 @@ import {
   StyleSheet,
   DimensionValue,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 
 import MainAreaView from "../../components/main-area-view";
@@ -121,69 +122,76 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
     );
   };
 
-  if (tracks && tracks.length > 0 && tracks[0].name !== "")
+  if (!tracks || tracks.length < 1 || tracks[0].name === "") {
     return (
-      <MainAreaView>
-        <Header />
-        <FlatList
-          data={tracks}
-          keyExtractor={(item) => item.mbid}
-          renderItem={({ item, index }) => trackItem(item, index)}
-        />
-        {currentTrack && currentTrack.name !== "" && (
-          <View style={styles.miniPlayer}>
-            <View
-              style={[
-                styles.colorView,
-                {
-                  width: sliderBackgroundWidth,
-                },
-              ]}
-            />
-            <View style={styles.miniPlayerHeader}>
-              <TouchableOpacity
-                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
-                onPress={() => navigation.navigate("Details")}
-              >
-                <CustomImage
-                  imgSize="small"
-                  isCircle
-                  imgSrc={{
-                    uri: findImageBySize("small"),
-                    cache: "only-if-cached",
-                  }}
-                />
-                <View style={{ flex: 1 }}>
-                  <CustomText style={styles.miniPlayerTrackName}>{currentTrack.name}</CustomText>
-                </View>
-              </TouchableOpacity>
-              <View style={styles.miniPlayerControls}>
-                <TouchableOpacity onPress={playPastTrack}>
-                  <Icon name="backward" size={15} color={colors.secondaryFontColor} />
-                </TouchableOpacity>
-                <Icon name="play" size={25} color={colors.secondaryFontColor} />
-                <TouchableOpacity onPress={playNextTrack}>
-                  <Icon name="forward" size={15} color={colors.secondaryFontColor} />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={{ flex: 1, alignItems: "center" }}>
-              <View style={{ width: "85%" }}>
-                <Slider
-                  minimumValue={0}
-                  maximumValue={1}
-                  thumbStyle={styles.thumb}
-                  trackStyle={styles.track}
-                  value={sliderValue}
-                  minimumTrackTintColor={colors.ternairyBackgroundColor}
-                  onValueChange={(value) => setSliderValue(value[0])}
-                />
-              </View>
-            </View>
-          </View>
-        )}
+      <MainAreaView style={{ justifyContent: "center" }}>
+        <ActivityIndicator />
       </MainAreaView>
     );
+  }
+
+  return (
+    <MainAreaView>
+      <Header />
+      <FlatList
+        data={tracks}
+        keyExtractor={(item) => item.mbid}
+        renderItem={({ item, index }) => trackItem(item, index)}
+      />
+      {currentTrack && currentTrack.name !== "" && (
+        <View style={styles.miniPlayer}>
+          <View
+            style={[
+              styles.colorView,
+              {
+                width: sliderBackgroundWidth,
+              },
+            ]}
+          />
+          <View style={styles.miniPlayerHeader}>
+            <TouchableOpacity
+              style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+              onPress={() => navigation.navigate("Details")}
+            >
+              <CustomImage
+                imgSize="small"
+                isCircle
+                imgSrc={{
+                  uri: findImageBySize("small"),
+                  cache: "only-if-cached",
+                }}
+              />
+              <View style={{ flex: 1 }}>
+                <CustomText style={styles.miniPlayerTrackName}>{currentTrack.name}</CustomText>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.miniPlayerControls}>
+              <TouchableOpacity onPress={playPastTrack}>
+                <Icon name="backward" size={15} color={colors.secondaryFontColor} />
+              </TouchableOpacity>
+              <Icon name="play" size={25} color={colors.secondaryFontColor} />
+              <TouchableOpacity onPress={playNextTrack}>
+                <Icon name="forward" size={15} color={colors.secondaryFontColor} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <View style={{ width: "85%" }}>
+              <Slider
+                minimumValue={0}
+                maximumValue={1}
+                thumbStyle={styles.thumb}
+                trackStyle={styles.track}
+                value={sliderValue}
+                minimumTrackTintColor={colors.ternairyBackgroundColor}
+                onValueChange={(value) => setSliderValue(value[0])}
+              />
+            </View>
+          </View>
+        </View>
+      )}
+    </MainAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
