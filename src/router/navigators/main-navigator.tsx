@@ -9,6 +9,7 @@ import { DetailScreen } from "../../screens/details";
 import { TrackContextProvider } from "../../context/tracks-context";
 import { ProfileScreen } from "../../screens/profile";
 import { ProfileContextProvider } from "../../context/profile-context";
+import { colors } from "../../styles/variables";
 
 const SCREEN_OPTIONS = { header: () => null };
 
@@ -28,7 +29,7 @@ const MainStackNavigator = () => (
 
 const MainNavigatorImpl = () => {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={{ backgroundColor: colors.mainBackgroundColor }}>
       <NavigationContainer>
         <ProfileContextProvider>
           <PlayerContextProvider>

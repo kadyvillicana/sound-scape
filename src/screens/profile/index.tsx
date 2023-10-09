@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import MainAreaView from "../../components/main-area-view";
 import CustomText from "../../components/custom-text";
-import { FlatList, Platform, TouchableOpacity, View } from "react-native";
+import { FlatList, Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomImage from "../../components/custom-image";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { colors } from "../../styles/variables";
@@ -21,29 +21,14 @@ export const ProfileScreen: FC<ProfileScreenProps> = ({ navigation }) => {
 
   const Header = () => {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingLeft: 10,
-          paddingRight: 10,
-          paddingTop: Platform.OS === "ios" ? 0 : 15,
-        }}
-      >
+      <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{ flex: 1, justifyContent: "center" }}
         >
           <Icon name="chevron-left" size={25} color={colors.white} />
         </TouchableOpacity>
-        <View
-          style={{
-            flex: 6,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
-        >
+        <View style={styles.textContainer}>
           <CustomText fontSize="medium" style={{ fontWeight: "500" }}>
             Mi Perfil
           </CustomText>
@@ -56,15 +41,14 @@ export const ProfileScreen: FC<ProfileScreenProps> = ({ navigation }) => {
     );
   };
 
-  const trackItem = (track: any, idx: number) => {
+  const trackItem = (track: any) => {
     return (
-      <TouchableOpacity
+      <View
         style={{
           flex: 1,
           flexDirection: "row",
           paddingTop: 10,
         }}
-        onPress={() => console.log(idx)}
       >
         <View
           style={{
@@ -94,7 +78,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = ({ navigation }) => {
             </CustomText>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -109,3 +93,19 @@ export const ProfileScreen: FC<ProfileScreenProps> = ({ navigation }) => {
     </MainAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: Platform.OS === "ios" ? 0 : 15,
+  },
+  textContainer: {
+    flex: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+});

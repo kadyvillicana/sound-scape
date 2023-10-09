@@ -36,15 +36,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
 
   const Header = () => {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingLeft: 10,
-          paddingRight: 10,
-          paddingTop: Platform.OS === "ios" ? 0 : 15,
-        }}
-      >
+      <View style={styles.header}>
         <View style={{ flex: 1 }}></View>
         <View
           style={{
@@ -54,7 +46,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           }}
         >
           <CustomText isPrimary fontSize="medium" style={{ fontWeight: "500" }}>
-            Top tracks Mexico
+            Top tracks - Mexico
           </CustomText>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
@@ -98,7 +90,9 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
               style={{
                 fontWeight: "400",
                 color:
-                  track.mbid === currentTrack.mbid ? colors.activeGreen : colors.primaryFontColor,
+                  currentTrack.mbid !== "" && track.mbid === currentTrack.mbid
+                    ? colors.activeGreen
+                    : colors.primaryFontColor,
               }}
             >
               {track.name}
@@ -117,7 +111,11 @@ export const HomeScreen: FC<HomeScreenProps> = ({ navigation }) => {
           }}
           onPress={() => playTrack(idx)}
         >
-          <Icon name="play" size={25} color={colors.secondaryFontColor} />
+          {track.mbid === currentTrack.mbid ? (
+            <Icon name="pause" size={25} color={colors.activeGreen} />
+          ) : (
+            <Icon name="play" size={25} color={colors.secondaryFontColor} />
+          )}
         </TouchableOpacity>
       </View>
     );
@@ -247,5 +245,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 1,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: Platform.OS === "ios" ? 0 : 15,
   },
 });

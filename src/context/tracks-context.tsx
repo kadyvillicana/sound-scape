@@ -1,11 +1,8 @@
 import React, { FC, createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
 
-import { API_KEY, TOP_TRACKS_LIMIT } from "@env";
 import { usePlayerContext } from "./player-context";
 import { useProfileContext } from "./profile-context";
-
-const API_ENDPOINT = "https://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks";
+import { getTracksByCountry } from "../utils/api";
 
 interface Artist {
   name: string;
@@ -51,7 +48,7 @@ interface Tracks {
 
 export interface Track {
   name: string;
-  duration: number;
+  duration: string;
   listeners: number;
   mbid: string;
   url: string;
@@ -84,27 +81,11 @@ export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ childr
   const { addListenedTrackToList } = useProfileContext();
   const [trackIndex, setTrackIndex] = useState(0);
 
-  const getTracksByCountry = async (country: string): Promise<void> => {
-    try {
-      const endpoint = `${API_ENDPOINT}&country=${country}&api_key=${API_KEY}&format=json&limit=${TOP_TRACKS_LIMIT}`;
-      const { data } = await axios.get<GetTracksResponse>(endpoint, {
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      if (data?.tracks?.track) {
-        avoidDuplicatedDate(data.tracks.track);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const avoidDuplicatedDate = (fetchedTracks: Track[]) => {
     if (fetchedTracks.length > 0) {
       const newArrayList: Track[] = [];
       fetchedTracks.forEach((track) => {
-        if (!newArrayList.some((o) => o.mbid === track.mbid)) {
+        if (track.mbid !== "" && !newArrayList.some((o) => o.mbid === track.mbid)) {
           newArrayList.push({ ...track });
         }
       });
@@ -141,7 +122,13 @@ export const TrackContextProvider: FC<{ children: React.ReactNode }> = ({ childr
   };
 
   useEffect(() => {
-    void getTracksByCountry("mexico");
+    const getData = async () => {
+      const res = await getTracksByCountry("mexico");
+      if (res?.tracks?.track) {
+        avoidDuplicatedDate(res.tracks.track);
+      }
+    };
+    void getData();
   }, []);
 
   return (

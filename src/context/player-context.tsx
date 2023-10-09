@@ -9,7 +9,7 @@ interface PlayerContextValues {
 
 const defaultTrack: Track = {
   name: "",
-  duration: 0,
+  duration: "",
   listeners: 0,
   mbid: "",
   url: "",
